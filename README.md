@@ -8,14 +8,16 @@ To avoid dealing with the double weekday effect of both reporting date of the ca
 This is depicted in the figure below.
 Our prediction of each of these weekly chunks then consists of the fraction of hospitalisations of reported cases in the past.
 
-![reptri.png]
+!(Decomposition of the daily reported hospitalisation incidences into the <span style="color:orange">known incidences</span>, i.e. the **reporting triangle**, and <span style="color:green">the future weekly increments</span>. <span style="color:blue">The last increment</span> might not be a weekly one, but we expect few cases to occur for such long delays.)[reptri.png]
 
 More formally, denote by $h_{t,d}$ the number hospitalisations with reporting date $t$ that are known $d$ days later. Unfortunately we only observe $$H_{t,d} = \sum_{s = t - 6}^{t} h_{s,d + (t - s)},$$ i.e. a weekly sum of reported hospitalisations.
 On day $T$ our goal is to predict $H_{t,D}$ for large delays $D$ and days $t \leq T$, of course it suffices to predict $H_{t, D} - H_{t, T - t}$ and add the known $H_{t, T - t}$ to this prediction. 
 We rewrite this into weekly telescoping sum
+
 $$
 H_{t,D} - H_{t,d} = \left(H_{t, d + 7} - H_{t,d}\right) + \left(H_{t, d + 14} - H_{t, d + 7}\right) + \dots + \left(H_{t,D} - H_{t, d + 7 K}\right),
 $$
+
 where $K = \lfloor (D -d) / 7 \rfloor$, reducing the task at hand to predict hospitalisations in the $k$-th week ahead, $H_{t, d + 7k} - H_{t, d + 7\cdot(k - 1)}$, $k = 1, \dots, K$.
 To leverage known reported incidences, rewrite this as 
 $$\underbrace{\frac{H_{t, d + 7k} - H_{t, d + 7\cdot(k - 1)}}{I_{t,d}}}_{=:p_{t,d,k}} I_{t, d}$$
