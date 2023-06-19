@@ -15,5 +15,6 @@ check_and_install <- function(pkg){
   }
 }
 
-# Use lapply to check and install packages
-lapply(packages, check_and_install)
+invisible(
+  lapply(packages, check_and_install)
+)

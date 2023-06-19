@@ -1,12 +1,12 @@
 .PHONY: initialize
 initialize:
 	mkdir -p data/{interim,processed}
-	cd src; Rscript -e dependencies.R
+	cd src; Rscript dependencies.R
 
 .PHONY: data
 data: 
-	cd src/data; Rscript -e interim.R; Rscript -e processed.R
+	cd src/data; Rscript interim.R; Rscript processed.R
 
 .PHONY: submissions
 submissions:
-	cd src models; Rscript -e retrospective_nowcasts.R
+	cd src models; Rscript retrospective_nowcasts.R
