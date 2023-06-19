@@ -1,6 +1,6 @@
 .PHONY: initialize
 initialize:
-	mkdir data/{interim,processed}
+	mkdir -p data/{interim,processed}
 	cd src; Rscript -e dependencies.R
 
 .PHONY: data
