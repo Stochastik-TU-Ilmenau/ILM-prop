@@ -24,7 +24,7 @@ The result will be stored in the `data/processed` directory in the file `submiss
 To predict the number of hospitalisations we consider the reporting process of both reported COVID-19 cases and reported hospitalisations.
 Recall that the reporting date of a COVID-19 case is shared for both the case and its hospitalisation, i.e. the case and hospitalisation are linked through this date.
 
-As hospitalisations are only available as $7$-day rolling sums, see Section \ref{data-parameters}, we use $7$-day rolling sums for daily reported incidences as well. 
+As hospitalisations are only available as $7$-day rolling sums we use $7$-day rolling sums for daily reported incidences as well. 
 To avoid dealing with the double weekday effect of both reporting date of the case and reporting date of the hospitalisation we divide the future hospitalisations we wish to predict into chunks of one week, which gets rid of the weekday effect for the hospitalisations.
 This is depicted in the figure below.
 Our prediction of each of these weekly chunks then consists of the fraction of hospitalisations of reported cases in the past.
@@ -54,18 +54,16 @@ where $I_{t,d}$ is the $7$-day case incidence with reporting date $t$ known at t
 Assuming that the proportions $p_{t,d,k}$ change slowly over time $t$ we estimate them by 
 
 $$
-\begin{align}
 \widehat {p_{t,d,k}} = \frac{H_{t - 7k, d + 7k} - H_{t - 7k, d + 7\cdot(k - 1)}}{I_{t - 7k,d}} = p_{t - 7k,d,k}
-\end{align}
 $$
 
 and finally predict
 
 $$
-\begin{align}
 \widehat{H_{t,D}} = H_{t,d} + I_{t,d} \left(\widehat{p_{t,d,1}} + \dots + \widehat{p_{t,d,K}}\right).
-\end{align}
 $$
+
+In essence, this model is a regression of reported hospitalisations on reported cases.
 
 As hospitalisation is affected by age, we perform this procedure for all available age groups separately and finally aggregate over all age groups to obtain a nowcast for all age groups combined. 
 
