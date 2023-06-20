@@ -9,4 +9,4 @@ data:
 
 .PHONY: submissions
 submissions:
-	cd src models; Rscript retrospective_nowcasts.R
+	cd src/models; Rscript retrospective_submissions.R
