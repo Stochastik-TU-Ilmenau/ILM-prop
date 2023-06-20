@@ -46,7 +46,7 @@ where $K = \lfloor (D -d) / 7 \rfloor$, reducing the task at hand to predict hos
 To leverage known reported incidences, rewrite this as 
 
 $$
-\frac{H_{t, d + 7k} - H_{t, d + 7\cdot(k - 1)}}{I_{t,d}}\, I_{t, d} = p_{t,d,k}\, I_{t,d}
+\frac{H_{t, d + 7k} - H_{t, d + 7\cdot(k - 1)}}{I_{t,d}}  I_{t, d} = p_{t,d,k}  I_{t,d}
 $$
 
 where $I_{t,d}$ is the $7$-day case incidence with reporting date $t$ known at time $t + d$, i.e. the incidenct case analouge of $H_{t,d}$.
@@ -60,7 +60,7 @@ $$
 and finally predict
 
 $$
-\widehat{H_{t,D}} = H_{t,d} + \left(\widehat{p_{t,d,1}} + \dots + \widehat{p_{t,d,K}}\right)\, I_{t,d}.
+\widehat{H_{t,D}} = H_{t,d} + \left(\widehat{p_{t,d,1}} + \dots + \widehat{p_{t,d,K}}\right)  I_{t,d}.
 $$
 
 In essence, this model is a regression of reported hospitalisations on reported cases.
