@@ -34,7 +34,7 @@ Our prediction of each of these weekly chunks then consists of the fraction of h
 > Decomposition of the daily reported hospitalisation incidences into the <span style="color:rgb(255,121,0)">known incidences</span> $\color{#FF7900}H_{t,d}$, i.e. the **reporting triangle**, and <span style="color:rgb(0,116,122)">the future weekly increments</span> $\color{#00747A} H_{t, d + 7 (k + 1)} - H_{t, d + 7 k}$. <span style="color:rgb(0,51,89)">The last increment</span> might not be a weekly one, but we expect few cases to occur for such long delays.
 
 More formally, denote by $h_{t,d}$ the number of hospitalisations with reporting date $t$ that are known $d$ days later. Unfortunately we only observe $$H_{t,d} = \sum_{s = t - 6}^{t} h_{s,d + (t - s)},$$ i.e. a weekly sum of reported hospitalisations.
-On day $T$ our goal is to predict $H_{t,D}$ for large delays $D$ and days $t \leq T$, of course it suffices to predict $H_{t, D} - H_{t, T - t}$ and add the known $H_{t, T - t}$ to this prediction. 
+On day $T$ our goal is to predict $H_{t,D}$ for large delays $D$ and days $t \leq T$, for which it clearly suffices to predict $H_{t, D} - H_{t, T - t}$ and add the known $H_{t, T - t}$ to this prediction. 
 We rewrite this into a weekly telescoping sum
 
 $$
@@ -46,7 +46,7 @@ where $K = \lfloor (D -d) / 7 \rfloor$, reducing the task at hand to predict hos
 To leverage known reported incidences, rewrite this as 
 
 $$
-\frac{H_{t, d + 7k} - H_{t, d + 7\cdot(k - 1)}}{I_{t,d}} I_{t, d} = p_{t,d,k} I_{t,d}
+\frac{H_{t, d + 7k} - H_{t, d + 7\cdot(k - 1)}}{I_{t,d}}\, I_{t, d} = p_{t,d,k}\, I_{t,d}
 $$
 
 where $I_{t,d}$ is the $7$-day case incidence with reporting date $t$ known at time $t + d$, i.e. the incidenct case analouge of $H_{t,d}$.
@@ -60,7 +60,7 @@ $$
 and finally predict
 
 $$
-\widehat{H_{t,D}} = H_{t,d} + I_{t,d} \left(\widehat{p_{t,d,1}} + \dots + \widehat{p_{t,d,K}}\right).
+\widehat{H_{t,D}} = H_{t,d} + \left(\widehat{p_{t,d,1}} + \dots + \widehat{p_{t,d,K}}\right)\, I_{t,d}.
 $$
 
 In essence, this model is a regression of reported hospitalisations on reported cases.
