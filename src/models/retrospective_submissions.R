@@ -10,9 +10,6 @@ suppressPackageStartupMessages({
     source(here("src/tools/variables.R"))
 })
 
-# 2022-10-21: Nowcast with 6 weeks of delay
-n_weeks <- 6
-
 root_dir <- here()
 
 prediction_sd <- function(data_date, date_to_nowcast, prediction, known, age_group) {
@@ -52,14 +49,12 @@ tri_hosp <- rep_tri_hosp_age %>%
 
 wk_hosp_delay <- read_interim("prob_weekly_hosp_delay_age.csv") %>%
     group_by(age_group) %>%
-    filter(w <= n_weeks) %>%
     nest()
 
 age_names <- sort(dimnames(tri_hosp)[[3]])
 
 retrospective_nowcasts <- expand_grid(
     data_date = seq(ymd(rownames(tri_hosp)[1]), today(), by = "1 day"),
-    # delay = 0:(13 * 7),
     delay = delays_to_nowcast,
     age_index = 1:6
 ) %>%
@@ -75,7 +70,6 @@ retrospective_nowcasts <- expand_grid(
 
 retrospective_nowcasts <- add_all_ages(retrospective_nowcasts, c(pred, known), data_date, date_to_nowcast)
 retrospective_predictions <- retrospective_nowcasts
-write_csv(retrospective_nowcasts, here("data/processed/long_retrospecitve_nowcasts.csv"))
 
 true_hospitalizations <- rep_tri_hosp_age %>%
     filter(delay == n_weeks * 7) %>%
@@ -84,7 +78,6 @@ true_hospitalizations <- add_all_ages(true_hospitalizations, actual, date_to_now
 residuals <- true_hospitalizations %>%
     inner_join(retrospective_nowcasts) %>%
     mutate(log_resid = log(pred - known) - log(actual - known), resid = pred - actual) %>%
-    # mutate(log_resid = log(pred) - log(actual), resid = pred - actual) %>%
     select(data_date, date_to_nowcast, age_group, everything())
 
 tri_hosp_full <- add_all_ages(select(rep_tri_hosp_age, -increment), value, hosp_date, case_date, delay) %>%
@@ -146,18 +139,4 @@ mean_submission <- pred_with_sd %>%
 
 submission %>%
     rbind(mean_submission) %>%
-    write_processed(str_interp("submissions-ILM-prop42.csv"))
-
-# uncomment to create missing submission dates
-# missing_dates <- ymd("2021-11-27", "2021-11-28", "2021-12-24", "2021-12-26", "2021-12-30", "2022-01-16")
-#
-submission %>%
-   rbind(mean_submission) %>%
-   group_by(forecast_date) %>%
-   group_split() %>%
-   lapply(function(df) {
-       forecast_date <- unique(df$forecast_date)
-       stopifnot(length(forecast_date) == 1)
-
-       write_processed(df, str_interp("${forecast_date}-ILM-prop42.csv"))
-   })
+    write_processed(str_interp("submissions-ILM-prop.csv"))
