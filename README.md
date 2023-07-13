@@ -3,21 +3,6 @@
 This repositiory provides code and some explanation for the ILM-prop model that participates in the [German COVID-19 NowcastHub](https://covid19nowcasthub.de). 
 
 
-# Reproducing Results
-
-Clone this repository and run 
-
-```sh
-make dependencies # install necessary R packages
-make data # prepare data from RKI case and hospitalisations
-make submissions # re-create submissions
-```
-
-in a terminal. You'll need to have R installed to run this model. 
-
-Building all submissions may take a while, even on a decently powered machine.
-
-The result will be stored in the `data/processed` directory in the file `submissions-ILM-prop.csv` which consists of all submissions stacked on top of one another. See the [NowcastHub wiki](https://github.com/KITmetricslab/hospitalization-nowcast-hub/wiki/Data-format) for more information about the data format.
 
 # Method
 
@@ -74,3 +59,21 @@ We chose these distributions based on explorative analysis and believe that thes
 Denote by $\hat H_{t,D,s}$ the nowcast made for date $t$ on date $s \geq t$. Starting with date $t + D$ the definite $H_{t,D}$ is known and we can estimate the absolute prediction error $\varepsilon_{t,s} = H_{t,D} - \hat H_{t,D,s}$ and the relative prediction error $\eta_{t,s} = \log \left( H_{t,D} - H_{t, s - t}\right) - \log \left( \hat H_{t,D,s} - H_{t, s- t} \right)$.
 For the nowcast for date $t$ made on date $s$ we estimate the standard deviation $\hat\sigma$ of $\varepsilon_{t - D - i, s - D - i}$ or $\eta_{t - D - i, s - D - i}$ (age groups 00-04, 05-14 and others respectively), $i = 0, \dots, 27$ by its empirical counterpart.
 The estimated predictive distribution which informs our prediction intervals is then $\mathcal N (\hat H_{t,D,s}, \hat\sigma^2)$ (age groups 00-04 and 05-14) or $\mathcal{LN} \left( \log \left(\hat H_{t,D,s} - H_{t, s - t}\right), \hat\sigma^2 \right) + H_{t, s - t}$ (all other age groups).
+
+# Reproducing Results
+
+Clone this repository and run 
+
+```sh
+make dependencies # install necessary R packages
+make data # prepare data from RKI case and hospitalisations
+make submissions # re-create submissions
+```
+
+in a terminal. You'll need to have R installed to run this model. 
+
+Building all submissions may take a while, even on a decently powered machine.
+
+The result will be stored in the `data/processed` directory in the file `submissions-ILM-prop.csv` which consists of all submissions stacked on top of one another. See the [NowcastHub wiki](https://github.com/KITmetricslab/hospitalization-nowcast-hub/wiki/Data-format) for more information about the data format.
+
+Note that there might be small deviations from the submitted nowcasts because every retrospective change of the data affects (due to the long horizon of 12 weeks) potentially a lot of submissions and we only provide the data at release of this repository rather than a full history of the data.
